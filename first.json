@@ -1,0 +1,15 @@
+{
+    "name": "Rohan",
+    "score": 100,
+    "isAdmin": true,
+    "license": null,
+    "shopItems": [
+        "food",
+        "clothes",
+        "oils"
+    ],
+    "myObj": {
+        "eId": 123,
+        "email": "yahoo"
+    }
+}

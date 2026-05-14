@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quiz Host</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #f0f2f5; padding-top: 50px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: inline-block; width: 400px; }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background-color: #6200ee; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #3700b3; }
+        .pin-display { font-size: 24px; font-weight: bold; color: #03dac6; margin-top: 20px; padding: 15px; border: 2px dashed #03dac6; display: none; }
+        label { display: block; text-align: left; font-size: 14px; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🚀 AI Quiz Host</h2>
+    
+    <label>What is the quiz about?</label>
+    <input type="text" id="topicInput" placeholder="e.g., 5 questions on C++ Pointers">
+    
+    <label>Set Timer (Seconds): <span id="timerVal">60</span>s</label>
+    <input type="range" id="timerInput" min="10" max="300" value="60" oninput="document.getElementById('timerVal').innerText = this.value">
+    
+    <button onclick="generateQuiz()" id="genBtn">Generate & Create Room</button>
+    
+    <div id="pinBox" class="pin-display"></div>
+</div>
+
+<script>
+    async function generateQuiz() {
+        const topic = document.getElementById('topicInput').value;
+        const timer_value = document.getElementById('timerInput').value;
+        const btn = document.getElementById('genBtn');
+        const pinBox = document.getElementById('pinBox');
+
+        if(!topic) { alert("Please enter a topic!"); return; }
+
+        btn.innerText = "Generating Quiz... Please wait";
+        btn.disabled = true;
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/create-room', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    topic: topic, 
+                    timer_value: parseInt(timer_value) 
+                })
+            });
+
+            const data = await response.json();
+            
+            if(data.status === "success") {
+                pinBox.innerText = "Room PIN: " + data.room_pin;
+                pinBox.style.display = "block";
+                btn.innerText = "Quiz Generated!";
+            }
+        } catch (error) {
+            alert("Error connecting to server!");
+            btn.innerText = "Generate & Create Room";
+            btn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
