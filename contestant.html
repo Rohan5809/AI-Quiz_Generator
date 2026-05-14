@@ -51,7 +51,7 @@
         if(!playerName || roomPin.length !== 4) return alert("Enter valid Name and PIN!");
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/join-room/${roomPin}`);
+            const response = await fetch(`https://ai-quiz-generator-7eak.onrender.com/${roomPin}`);
             const data = await response.json();
 
             if(response.ok) {
@@ -100,7 +100,7 @@
     }
 
     function connectWebSocket(pin, name) {
-        ws = new WebSocket(`ws://127.0.0.1:8000/ws/${pin}/${name}`);
+       ws = new WebSocket(`wss://ai-quiz-generator-7eak.onrender.com/ws/${pin}/${name}`);
         ws.onmessage = (event) => {
             const msg = JSON.parse(event.data);
             if(msg.type === "leaderboard") updateLeaderboardUI(msg.data);
