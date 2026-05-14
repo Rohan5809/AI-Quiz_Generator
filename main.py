@@ -13,12 +13,14 @@ client = genai.Client(api_key=api_key)
 
 app = FastAPI(title="AI Quiz Builder API")
 
+# Purane CORSMiddleware block ko isse replace karo
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Saari websites ko allow karo
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # GET, POST, OPTIONS sab allow karo
+    allow_headers=["*"],  # Saare headers allow karo
+    expose_headers=["*"],
 )
 
 # ==========================================
