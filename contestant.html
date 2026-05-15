@@ -1,66 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Quiz</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f9; padding: 20px; }
-        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-        #timer { font-size: 22px; font-weight: bold; background: #ffeeba; padding: 10px; border-radius: 5px; margin-bottom: 20px; display: none; }
-        .question { text-align: left; font-weight: bold; margin-top: 20px; }
-        .option { display: block; text-align: left; padding: 10px; background: #e9ecef; margin: 5px 0; border-radius: 5px; cursor: pointer; }
-        .leaderboard-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
-        #leaderboard-box { display: none; margin-top: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        #timer {
+            font-size: 22px;
+            font-weight: bold;
+            background: #ffeeba;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .question {
+            text-align: left;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .option {
+            display: block;
+            text-align: left;
+            padding: 10px;
+            background: #e9ecef;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        #leaderboard-box {
+            display: none;
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="card" id="join-section">
-    <h1>🎮 Join Quiz</h1>
-    <input type="text" id="nameInput" placeholder="Your Name" style="padding:10px; width:80%;"><br>
-    <input type="text" id="pinInput" placeholder="4-Digit PIN" maxlength="4" style="padding:10px; width:80%; margin-top:10px;"><br>
-    <button onclick="joinRoom()" style="padding:10px 20px; margin-top:15px; background:#007bff; color:white; border:none; border-radius:5px;">Enter Game</button>
-</div>
-
-<div id="quiz-area" style="display:none;">
-    <div id="timer">⏳ Time Left: <span id="time-text">--</span>s</div>
-    <div class="card">
-        <div id="questions-container"></div>
-        <button id="submitBtn" onclick="submitQuiz()" style="width:100%; padding:12px; background:#28a745; color:white; border:none; margin-top:20px; font-weight:bold;">Submit Answers</button>
+    <div class="card" id="join-section">
+        <h1>🎮 Join Quiz</h1>
+        <input type="text" id="nameInput" placeholder="Your Name" style="padding:10px; width:80%;"><br>
+        <input type="text" id="pinInput" placeholder="4-Digit PIN" maxlength="4"
+            style="padding:10px; width:80%; margin-top:10px;"><br>
+        <button onclick="joinRoom()"
+            style="padding:10px 20px; margin-top:15px; background:#007bff; color:white; border:none; border-radius:5px;">Enter
+            Game</button>
     </div>
-</div>
 
-<div class="card" id="leaderboard-box">
-    <h3 style="color:#ff9800;">🏆 Live Leaderboard</h3>
-    <div id="leaderboard-content"></div>
-</div>
+    <div id="quiz-area" style="display:none;">
+        <div id="timer">⏳ Time Left: <span id="time-text">--</span>s</div>
+        <div class="card">
+            <div id="questions-container"></div>
+            <button id="submitBtn" onclick="submitQuiz()"
+                style="width:100%; padding:12px; background:#28a745; color:white; border:none; margin-top:20px; font-weight:bold;">Submit
+                Answers</button>
+        </div>
+    </div>
 
-<script>
-    let ws;
-    let currentQuizData = [];
-    let roomPin = "";
-    let playerName = "";
-    let timerInterval;
-    let timeLeft = 60;
+    <div class="card" id="leaderboard-box">
+        <h3 style="color:#ff9800;">🏆 Live Leaderboard</h3>
+        <div id="leaderboard-content"></div>
+    </div>
 
-    async function joinRoom() {
+    <script>
+        let ws;
+        let currentQuizData = [];
+        let roomPin = "";
+        let playerName = "";
+        let timerInterval;
+        let timeLeft = 60;
+
+  async function joinRoom() {
         playerName = document.getElementById("nameInput").value.trim();
         roomPin = document.getElementById("pinInput").value.trim();
 
         if(!playerName || roomPin.length !== 4) return alert("Enter valid Name and PIN!");
 
         try {
-            const response = await fetch(`https://ai-quiz-generator-7eak.onrender.com//join-room/${roomPin}`);
+            const response = await fetch(`https://ai-quiz-generator-7eak.onrender.com/join-room/${roomPin}`);
             const data = await response.json();
+
+            // TRACKER 1: Pura data console mein print karo
+            console.log("Server se ye data aaya:", data);
 
             if(response.ok) {
                 document.getElementById("join-section").style.display = "none";
                 document.getElementById("quiz-area").style.display = "block";
                 document.getElementById("leaderboard-box").style.display = "block";
                 
-                currentQuizData = data.quiz.quiz;
-                timeLeft = data.timer_seconds || 60; // Host wali timer value
+                // Gemini ke alag-alag nakhrno ko handle karne ka tareeka
+                let extractedQuiz = data.quiz;
+                if (data.quiz && data.quiz.quiz) {
+                    extractedQuiz = data.quiz.quiz;
+                }
+                
+                // TRACKER 2: Asli questions array print karo
+                console.log("Questions Array ye hai:", extractedQuiz);
+
+                currentQuizData = extractedQuiz;
+                timeLeft = data.timer_seconds || 60;
                 
                 renderQuiz(currentQuizData);
                 connectWebSocket(roomPin, playerName);
@@ -68,65 +133,70 @@
             } else {
                 alert("Room not found!");
             }
-        } catch (e) { alert("Server error!"); }
+        } catch (e) {
+            // TRACKER 3: Asli error screen par dikhao
+            console.error("CRASH KI WAJAH:", e);
+            alert("Code Crash Hua: " + e.message);
+        }
     }
 
-    function startTimer() {
-        const timerDiv = document.getElementById("timer");
-        const timeText = document.getElementById("time-text");
-        timerDiv.style.display = "block";
-        
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            timeText.innerText = timeLeft;
-            if(timeLeft <= 10) timerDiv.style.color = "red";
-            if(timeLeft <= 0) {
-                clearInterval(timerInterval);
-                alert("Time Up!");
-                submitQuiz();
-            }
-        }, 1000);
-    }
+        function startTimer() {
+            const timerDiv = document.getElementById("timer");
+            const timeText = document.getElementById("time-text");
+            timerDiv.style.display = "block";
 
-    function renderQuiz(questions) {
-        let html = "";
-        questions.forEach((q, i) => {
-            html += `<div class="question">Q${i+1}: ${q.question}</div>`;
-            q.options.forEach(opt => {
-                html += `<label class="option"><input type="radio" name="q${i}" value="${opt}"> ${opt}</label>`;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timeText.innerText = timeLeft;
+                if (timeLeft <= 10) timerDiv.style.color = "red";
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time Up!");
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function renderQuiz(questions) {
+            let html = "";
+            questions.forEach((q, i) => {
+                html += `<div class="question">Q${i + 1}: ${q.question}</div>`;
+                q.options.forEach(opt => {
+                    html += `<label class="option"><input type="radio" name="q${i}" value="${opt}"> ${opt}</label>`;
+                });
             });
-        });
-        document.getElementById("questions-container").innerHTML = html;
-    }
+            document.getElementById("questions-container").innerHTML = html;
+        }
 
-    function connectWebSocket(pin, name) {
-       ws = new WebSocket(`wss://ai-quiz-generator-7eak.onrender.com/ws/${pin}/${name}`);
-        ws.onmessage = (event) => {
-            const msg = JSON.parse(event.data);
-            if(msg.type === "leaderboard") updateLeaderboardUI(msg.data);
-        };
-    }
+        function connectWebSocket(pin, name) {
+            ws = new WebSocket(`wss://ai-quiz-generator-7eak.onrender.com/ws/${pin}/${name}`);
+            ws.onmessage = (event) => {
+                const msg = JSON.parse(event.data);
+                if (msg.type === "leaderboard") updateLeaderboardUI(msg.data);
+            };
+        }
 
-    function submitQuiz() {
-        clearInterval(timerInterval);
-        document.getElementById("timer").style.display = "none";
-        let score = 0;
-        currentQuizData.forEach((q, i) => {
-            const selected = document.querySelector(`input[name="q${i}"]:checked`);
-            if(selected && selected.value === q.answer) score += 10;
-        });
-        document.getElementById("submitBtn").style.display = "none";
-        document.getElementById("questions-container").innerHTML = `<h2>Your Score: ${score}</h2>`;
-        ws.send(JSON.stringify({ action: "submit_score", score: score }));
-    }
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById("timer").style.display = "none";
+            let score = 0;
+            currentQuizData.forEach((q, i) => {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected && selected.value === q.answer) score += 10;
+            });
+            document.getElementById("submitBtn").style.display = "none";
+            document.getElementById("questions-container").innerHTML = `<h2>Your Score: ${score}</h2>`;
+            ws.send(JSON.stringify({ action: "submit_score", score: score }));
+        }
 
-    function updateLeaderboardUI(data) {
-        let html = "";
-        Object.entries(data).forEach(([user, pts]) => {
-            html += `<div class="leaderboard-item"><span>${user}</span><span>${pts} pts</span></div>`;
-        });
-        document.getElementById("leaderboard-content").innerHTML = html || "Waiting for players...";
-    }
-</script>
+        function updateLeaderboardUI(data) {
+            let html = "";
+            Object.entries(data).forEach(([user, pts]) => {
+                html += `<div class="leaderboard-item"><span>${user}</span><span>${pts} pts</span></div>`;
+            });
+            document.getElementById("leaderboard-content").innerHTML = html || "Waiting for players...";
+        }
+    </script>
 </body>
+
 </html>
