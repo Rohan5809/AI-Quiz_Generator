@@ -8,7 +8,7 @@ import random
 from pymongo import MongoClient # Nayi Library Add Ki Hai
 
 # Yahan apni original Gemini API Key paste karna!
-api_key = "AIzaSyB6EDs9NfiK-ML4Kd22HvLQp44-mT77wZQ" 
+api_key = "AIzaSyCR6ILayOMQXizPlYWFJAC4fClGty57QKk" 
 client = genai.Client(api_key=api_key)
 
 app = FastAPI(title="AI Quiz Builder API")
