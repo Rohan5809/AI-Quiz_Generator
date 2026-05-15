@@ -13,16 +13,17 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { primary: '#4f46e5' } // Custom Indigo accent color
+                    colors: { primary: '#4f46e5' } 
                 }
             }
         }
     </script>
     <style>
-        /* Custom minimal tweaks for radio buttons */
         body { font-family: 'Inter', sans-serif; }
         .option-card:hover { border-color: #4f46e5; background-color: #eef2ff; }
         input[type="radio"]:checked + span { font-weight: 600; color: #4f46e5; }
+        /* Progress bar ki smooth sliding animation ke liye */
+        .timer-transition { transition: width 1s linear, background-color 0.3s ease; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col items-center py-10 px-4">
@@ -38,8 +39,17 @@
 </div>
 
 <div id="quiz-area" class="w-full max-w-2xl hidden flex-col items-center">
-    <div id="timer" class="hidden bg-amber-100 text-amber-800 px-5 py-2.5 rounded-full font-bold mb-6 shadow-sm border border-amber-200 flex items-center gap-2 transition-all duration-300">
-        ⏳ Time Left: <span id="time-text">--</span>s
+    
+    <div id="timer-container" class="hidden w-full bg-white p-4 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 mb-6">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+                ⏳ Time Remaining
+            </span>
+            <span id="time-text" class="text-xl font-black text-primary">--s</span>
+        </div>
+        <div class="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+            <div id="timer-bar" class="h-full bg-primary timer-transition rounded-full" style="width: 100%;"></div>
+        </div>
     </div>
     
     <div class="bg-white p-6 md:p-8 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 w-full mb-6">
@@ -62,6 +72,7 @@
     let playerName = "";
     let timerInterval;
     let timeLeft = 60;
+    let totalTime = 60; // Naya variable percentage nikalne ke liye
 
     async function joinRoom() {
         playerName = document.getElementById("nameInput").value.trim();
@@ -69,7 +80,6 @@
 
         if(!playerName || roomPin.length !== 4) return alert("Enter valid Name and PIN!");
 
-        // Button state change to show it's loading
         const btn = document.querySelector('button');
         const originalText = btn.innerText;
         btn.innerText = "Joining...";
@@ -82,7 +92,7 @@
             if(response.ok) {
                 document.getElementById("join-section").classList.add("hidden");
                 document.getElementById("quiz-area").classList.remove("hidden");
-                document.getElementById("quiz-area").classList.add("flex"); // Tailwind flex
+                document.getElementById("quiz-area").classList.add("flex");
                 document.getElementById("leaderboard-box").classList.remove("hidden");
                 
                 let extractedQuiz = data.quiz;
@@ -91,7 +101,10 @@
                 }
                 
                 currentQuizData = extractedQuiz;
-                timeLeft = data.timer_seconds || 60;
+                
+                // Set total time and time left
+                totalTime = data.timer_seconds || 60;
+                timeLeft = totalTime;
                 
                 renderQuiz(currentQuizData);
                 connectWebSocket(roomPin, playerName);
@@ -110,24 +123,32 @@
     }
 
     function startTimer() {
-        const timerDiv = document.getElementById("timer");
+        const timerContainer = document.getElementById("timer-container");
         const timeText = document.getElementById("time-text");
-        timerDiv.classList.remove("hidden");
+        const timerBar = document.getElementById("timer-bar");
+        
+        timerContainer.classList.remove("hidden");
         
         timerInterval = setInterval(() => {
             timeLeft--;
-            timeText.innerText = timeLeft;
+            timeText.innerText = timeLeft + "s";
             
-            // Gamified Timer Logic (Turns Red and Pulses)
+            // Width calculate kar rahe hain (e.g. 30/60 = 50%)
+            const widthPercentage = (timeLeft / totalTime) * 100;
+            timerBar.style.width = widthPercentage + "%";
+            
+            // Gamified Color Logic (Jab 10 seconds bachein)
             if(timeLeft <= 10) {
-                timerDiv.classList.remove("bg-amber-100", "text-amber-800", "border-amber-200");
-                timerDiv.classList.add("bg-red-100", "text-red-600", "border-red-200", "animate-pulse");
+                timeText.classList.remove("text-primary");
+                timeText.classList.add("text-red-600", "animate-pulse");
+                timerBar.classList.remove("bg-primary");
+                timerBar.classList.add("bg-red-500");
             }
             if(timeLeft <= 0) {
                 clearInterval(timerInterval);
                 submitQuiz();
             }
-        }, 1000);
+        }, 1000); // Har 1 second mein update
     }
 
     function renderQuiz(questions) {
@@ -159,7 +180,7 @@
 
     function submitQuiz() {
         clearInterval(timerInterval);
-        document.getElementById("timer").classList.add("hidden");
+        document.getElementById("timer-container").classList.add("hidden"); // Naye container ko hide kar rahe hain
         let score = 0;
         currentQuizData.forEach((q, i) => {
             const selected = document.querySelector(`input[name="q${i}"]:checked`);
@@ -167,7 +188,6 @@
         });
         document.getElementById("submitBtn").classList.add("hidden");
         
-        // Beautiful Score Reveal Component
         document.getElementById("questions-container").innerHTML = `
             <div class="text-center py-10 animate-fade-in">
                 <div class="text-6xl mb-4">🎯</div>
@@ -193,7 +213,6 @@
             else if(index === 2) medal = "🥉";
             else medal = `<span class="text-gray-400 font-medium w-6 inline-block text-center">${index+1}</span>`;
 
-            // Zebra striping for leaderboard rows
             const bgClass = index % 2 === 0 ? "bg-gray-50" : "bg-white";
 
             html += `
