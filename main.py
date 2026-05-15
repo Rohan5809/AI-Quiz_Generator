@@ -4,12 +4,18 @@ from pydantic import BaseModel
 from google import genai
 from google.genai import types
 import json
+import os
 import random
 from pymongo import MongoClient # Nayi Library Add Ki Hai
 
-# Yahan apni original Gemini API Key paste karna!
-api_key = "AIzaSyCR6ILayOMQXizPlYWFJAC4fClGty57QKk" 
-client = genai.Client(api_key=api_key)
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
+    print("Error: GEMINI_API_KEY is missing!")
+
+
+client = genai.Client(api_key=GEMINI_API_KEY) 
+
 
 app = FastAPI(title="AI Quiz Builder API")
 
