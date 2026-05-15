@@ -100,7 +100,7 @@
     }
 
     function connectWebSocket(pin, name) {
-       ws = new WebSocket(`wss://ai-quiz-generator-7eak.onrender.com/ws/${pin}/${name}`);
+       ws = new WebSocket(`wss://ai-quiz-generator-7eak.onrender.com/join-room/${pin}/${name}`);
         ws.onmessage = (event) => {
             const msg = JSON.parse(event.data);
             if(msg.type === "leaderboard") updateLeaderboardUI(msg.data);
