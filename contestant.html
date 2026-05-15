@@ -58,46 +58,30 @@
         Game</button>
     </div>
     
-    <div id="quiz-area" class="w-full max-w-2xl hidden flex-col items-center">
-        <div id="timer-container"
-        class="hidden sticky top-2 z-50 w-full max-w-2xl bg-white/80 backdrop-blur-lg border border-white/20 shadow-lg rounded-2xl p-4 mb-8 transition-all duration-500">
+   <div id="quiz-area" class="w-full max-w-2xl hidden flex-col items-center">
+    
+    <div id="timer-container" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-2xl bg-white/95 backdrop-blur-xl border border-gray-200 shadow-2xl rounded-2xl p-4 transition-all duration-500">
         <div class="flex justify-between items-center mb-2">
-                <span class="text-xs font-black uppercase tracking-widest text-gray-500 flex items-center gap-1">
-                    <span class="relative flex h-2 w-2">
-                        <span
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                        </span>
-                        Live Quiz Timer
-                    </span>
-                    <span id="time-text" class="text-lg font-black text-indigo-600 font-mono">--s</span>
-                </div>
-                
-                <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden border border-gray-50">
-                    <div id="timer-bar" class="h-full bg-indigo-600 w-full shadow-[0_0_10px_rgba(79,70,229,0.4)]"
-                    style="transition: width 1s linear;"></div>
-                </div>
-            </div>
-            <div id="timer-container"
-            class="hidden w-full bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-gray-100 mb-6 sticky top-4 z-50">
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
-                    ⏳ Time Remaining
+            <span class="text-xs font-black uppercase tracking-widest text-gray-500 flex items-center gap-1">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
                 </span>
-                <span id="time-text" class="text-xl font-black text-primary">--s</span>
-            </div>
-            <div class="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
-                <div id="timer-bar" class="h-full bg-primary timer-transition rounded-full" style="width: 100%;"></div>
-            </div>
+                Live Quiz Timer
+            </span>
+            <span id="time-text" class="text-xl font-black text-indigo-600 font-mono">--s</span>
         </div>
         
-        <div
-        class="bg-white p-6 md:p-8 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 w-full mb-6">
-        <div id="questions-container" class="space-y-8"></div>
-        <button id="submitBtn" onclick="submitQuiz()"
-        class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 rounded-xl mt-8 transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98] text-lg">Submit
-        Answers</button>
+        <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden border border-gray-50">
+            <div id="timer-bar" class="h-full bg-indigo-600 w-full shadow-[0_0_10px_rgba(79,70,229,0.4)]" style="transition: width 1s linear;"></div>
+        </div>
     </div>
+    
+    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 w-full mb-6 mt-28">
+        <div id="questions-container" class="space-y-8"></div>
+        <button id="submitBtn" onclick="submitQuiz()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 rounded-xl mt-8 transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98] text-lg">Submit Answers</button>
+    </div>
+</div>
 </div>
 
 <div class="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 w-full max-w-md mt-6 hidden"
