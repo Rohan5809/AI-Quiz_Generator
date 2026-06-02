@@ -34,7 +34,6 @@
             color: #4f46e5;
         }
         
-        /* Progress bar ki smooth sliding animation ke liye */
         .timer-transition {
             transition: width 1s linear, background-color 0.3s ease;
         }
@@ -99,7 +98,7 @@ id="leaderboard-box">
         let playerName = "";
         let timerInterval;
         let timeLeft = 60;
-        let totalTime = 60; // Naya variable percentage nikalne ke liye
+        let totalTime = 60;
         
         async function joinRoom() {
             playerName = document.getElementById("nameInput").value.trim();
@@ -151,27 +150,27 @@ id="leaderboard-box">
         
         
         function startTimer() {
-            let totalTime = 60; // Isko global rehne do
+            let totalTime = 60; 
             const timerContainer = document.getElementById("timer-container");
             const timeText = document.getElementById("time-text");
             const timerBar = document.getElementById("timer-bar");
             
             timerContainer.classList.remove("hidden");
             
-            // Initial setup
+    
             timeText.innerText = timeLeft + "s";
             
             timerInterval = setInterval(() => {
         timeLeft--;
         timeText.innerText = timeLeft + "s";
         
-        // Percentage nikalna: (Bacha hua waqt / Total waqt) * 100
+      
         const widthPercentage = (timeLeft / totalTime) * 100;
         
-        // CSS Bar ko update karna
+      
         timerBar.style.width = widthPercentage + "%";
         
-        // Danger Zone: 10 seconds bache toh color change aur glow
+        
         if(timeLeft <= 10) {
             timerBar.classList.remove("bg-indigo-600");
             timerBar.classList.add("bg-red-500");
