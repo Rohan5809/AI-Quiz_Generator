@@ -6,7 +6,7 @@ from google.genai import types
 import json
 import os
 import random
-from pymongo import MongoClient # Nayi Library Add Ki Hai
+from pymongo import MongoClient 
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
@@ -19,20 +19,15 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 
 app = FastAPI(title="AI Quiz Builder API")
 
-# Purane CORSMiddleware block ko isse replace karo
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Saari websites ko allow karo
+    allow_origins=["*"], 
     allow_credentials=True,
-    allow_methods=["*"],  # GET, POST, OPTIONS sab allow karo
-    allow_headers=["*"],  # Saare headers allow karo
+    allow_methods=["*"], 
+    allow_headers=["*"], 
     expose_headers=["*"],
 )
 
-# ==========================================
-# NAYA: MongoDB Connection Setup
-# ==========================================
-# Apna copied password yahan <db_password> ki jagah dalo
 MONGO_URI = "mongodb+srv://rohangupta2134_db_user:vugv3IWwb6BXic4m@quizgenerator.gn4unug.mongodb.net/?retryWrites=true&w=majority&appName=QuizGenerator"
 try:
     mongo_client = MongoClient(MONGO_URI)
@@ -81,11 +76,10 @@ class ConnectionManager:
         self.leaderboards[room_pin][player_name] = score
 
 manager = ConnectionManager()
-# ==========================================
 
 class QuizRequest(BaseModel):
     topic: str
-    timer_value: int  # NAYA: Host se seconds lene ke liye
+    timer_value: int 
 
 def generate_quiz_from_ai(topic: str):
     prompt = f"""
