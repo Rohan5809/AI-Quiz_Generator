@@ -2,7 +2,6 @@ from google import genai
 from google.genai import types
 import json
 
-# Yahan apni Gemini API key daalo
 api_key = "AIzaSyB6EDs9NfiK-ML4Kd22HvLQp44-mT77wZQ"
 client = genai.Client(api_key=api_key)
 
@@ -18,16 +17,15 @@ def generate_quiz(topic):
     
     print(f"Generating quiz for: {topic}...\n")
     
-    # Nayi library ka request bhejne ka tareeka
     response = client.models.generate_content(
-        model='gemini-2.5-flash', # Latest and fastest free model
+        model='gemini-2.5-flash', 
         contents=prompt,
         config=types.GenerateContentConfig(
-            response_mime_type="application/json" # JSON force karne ke liye
+            response_mime_type="application/json" 
         )
     )
     
-    # Text ko JSON (dictionary) mein convert karna
+ 
     quiz_json = json.loads(response.text)
     
     return quiz_json
