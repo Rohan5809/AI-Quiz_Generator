@@ -13,7 +13,7 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { primary: '#4f46e5' } // Matching Indigo accent
+                    colors: { primary: '#4f46e5' } 
                 }
             }
         }
@@ -118,10 +118,8 @@
         btn.disabled = false;
     }
 
-    // Host connects to the same room as a spectator to get leaderboard updates
     function connectHostToRoom(pin) {
-        // We use "HOST_VIEWER" as the player name so backend doesn't crash, 
-        // and it just receives broadcasted messages.
+       
         hostWs = new WebSocket(`wss://ai-quiz-generator-7eak.onrender.com/ws/${pin}/HOST_VIEWER`);
         
         hostWs.onmessage = (event) => {
